@@ -211,10 +211,8 @@ namespace Riot {
 
     export type Frame = {
       events: TimelineEvent[];
-      participantFrames: {
-        [participantId: number]: ParticipantFrame;
-        timestamp: number;
-      };
+      participantFrames: Record<number, ParticipantFrame>;
+      timestamp: number;
     };
 
     export type Position = {
@@ -237,9 +235,9 @@ namespace Riot {
     export type LaneType = 'BOT_LANE' | 'MID_LANE' | 'TOP_LANE';
 
     /** Contains only common event types */
-    export type TimelineEvent = {
+    export type TimelineEvent<T extends string = string> = {
       timestamp: number;
-      type: string;
+      type: T;
     } & (
       | {
           type: 'PAUSE_END';
@@ -324,7 +322,7 @@ namespace Riot {
         }
       | {
           type: 'CHAMPION_KILL';
-          killerId: number;
+          killerId?: number;
           killStreakLength: number;
           bounty: number;
           assistingParticipantIds?: number[];
@@ -386,6 +384,17 @@ namespace Riot {
       | {
           type: 'OBJECTIVE_BOUNTY_FINISH';
           teamId: TeamId;
+        }
+      | {
+          type: 'DRAGON_SOUL_GIVEN';
+          teamId: TeamId;
+          name:
+            | 'Chemtech'
+            | 'Hextech'
+            | 'Mountain'
+            | 'Cloud'
+            | 'Ocean'
+            | 'Inferno';
         }
     );
 

@@ -1,5 +1,5 @@
-import { CSGoldVision } from '@/app/match/[matchId]/components/Scoreboard/CSGoldVision';
-import { DamageMeter } from '@/app/match/[matchId]/components/Scoreboard/DamageMeter';
+import { CSGoldVision } from './CSGoldVision';
+import { DamageMeter } from './DamageMeter';
 import { ChampIcon } from '@/components/riotIcons/ChampIcon';
 import { ChampScoreboard } from '@/components/riotIcons/ChampScoreboard';
 import { Item } from '@/components/riotIcons/Item';
@@ -8,17 +8,27 @@ import { Rune } from '@/components/riotIcons/Rune';
 import { SummonerSpell } from '@/components/riotIcons/SummonerSpell';
 import { cn } from '@/lib/utils';
 
+/** Props for {@link PlayerScoreboard}. */
 export type PlayerScoreboardProps = {
+  /** The Riot post-match participant data. */
   participant: Riot.MatchV5.Participant;
+  /** The most total damage dealt to champions by any player in the match. */
   maxDamage: number;
+  /** The most damage taken from champions by any player in the match. */
   maxDamageTaken: number;
+  /** The highest CC-score of any player in the match. */
   maxCC: number;
+  /** The size of the scoreboard component. */
   size?: 'sm' | 'md' | 'lg';
+  /** Whether to use the champion icon layout instead of the splash layout. */
   icon?: boolean;
+  /** The scoreboard's controller key. */
   group?: string;
+  /** The patch the match is played on, using latest assets if undefined. */
   patch?: string;
 };
 
+/** An individual player's row in the match scoreboard. */
 export const PlayerScoreboard = ({
   participant,
   maxDamage,
@@ -134,14 +144,11 @@ export const PlayerScoreboard = ({
 
   const kdaComponent = (
     <div
-      className={cn(
-        'flex flex-col text-gray-200 items-center whitespace-nowrap shrink-0',
-        {
-          'text-xl w-32': size === 'lg',
-          'text-sm w-24': size === 'md',
-          'text-[.6rem] w-16': size === 'sm',
-        },
-      )}
+      className={cn('flex flex-col items-center whitespace-nowrap shrink-0', {
+        'text-xl w-32': size === 'lg',
+        'text-sm w-24': size === 'md',
+        'text-[.6rem] w-16': size === 'sm',
+      })}
     >
       <div
         className={cn('flex mt-auto font-semibold', {
@@ -161,7 +168,7 @@ export const PlayerScoreboard = ({
           className={cn('font-semibold', {
             'text-orange-400': kda === 'Perfect' || kda >= 5,
             'text-blue-400': kda !== 'Perfect' && kda >= 3 && kda < 5,
-            'text-white': kda !== 'Perfect' && kda < 3,
+            'dark:text-gray-600 text-gray-400': kda !== 'Perfect' && kda < 3,
           })}
         >
           {kda === 'Perfect' ? kda : kda.toFixed(2)}
@@ -180,7 +187,7 @@ export const PlayerScoreboard = ({
       maxDamageTaken={maxDamageTaken}
       maxCC={maxCC}
       size={size}
-      group={`${group}-dmg`}
+      group={group}
     />
   );
 
@@ -192,7 +199,7 @@ export const PlayerScoreboard = ({
       controlWards={visionWardsBoughtInGame}
       wardsPlaced={wardsPlaced}
       wardsKilled={wardsKilled}
-      group={`${group}-gold`}
+      group={group}
       size={size}
     />
   );

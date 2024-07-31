@@ -1,6 +1,6 @@
-import { Controller } from '@/app/match/[matchId]/components/Scoreboard/Controller';
-import { PlayerScoreboard } from '@/app/match/[matchId]/components/Scoreboard/PlayerScoreboard';
-import { TeamHeader } from '@/app/match/[matchId]/components/Scoreboard/TeamHeader';
+import { Controller } from './Scoreboard/Controller';
+import { PlayerScoreboard } from './Scoreboard/PlayerScoreboard';
+import { TeamHeader } from './Scoreboard/TeamHeader';
 import { getPatch } from '@/lib/utils';
 
 const BLUE = 100;

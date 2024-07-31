@@ -51,7 +51,7 @@ export const ChampScoreboard = async ({
         }}
       />
       <div
-        className={cn('absolute bg-gradient-to-r h-full from-gray-900 z-10', {
+        className={cn('absolute bg-gradient-to-r h-full from-background z-10', {
           'w-16': size === 'sm',
           'w-20': size === 'md',
           'w-24': size === 'lg',

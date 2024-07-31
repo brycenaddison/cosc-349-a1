@@ -16,5 +16,5 @@ export const PlaceholderIcon = ({
   size = 'md',
   className = '',
 }: PlaceholderIconProps): JSX.Element => (
-  <div className={cn(getIconClass(size), 'bg-white/5', className)} />
+  <div className={cn(getIconClass(size), 'bg-foreground/10', className)} />
 );

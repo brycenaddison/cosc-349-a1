@@ -16,10 +16,11 @@ export const MenuButton = ({
   return (
     <Link
       href={href}
+      scroll={false}
       className={cn(
-        'border-transparent transition duration-300 border-b-2 hover:bg-gray-800 hover:border-gray-500 text-base font-normal',
+        'border-transparent transition duration-300 border-b-2 hover:bg-foreground/10 hover:border-primary/50 text-base font-normal',
         {
-          'pointer-events-none border-gray-500': selected,
+          'pointer-events-none border-primary': selected,
         },
       )}
     >

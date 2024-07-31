@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Tooltip } from '@/components/Tooltip';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/utils';
 
 const CDRAGON_URL =
@@ -56,7 +56,7 @@ export const Rune = async ({
   const img = (
     <Image
       src={src}
-      className={cn(className, 'bg-white/5 shadow-tile', {
+      className={cn(className, 'bg-foreground/10 shadow-tile', {
         'rounded-lg': size === 'lg',
         'rounded-md': size === 'md',
         rounded: size === 'sm',
@@ -72,8 +72,10 @@ export const Rune = async ({
   return (
     <Tooltip
       tooltip={
-        <div className='flex flex-col font-normal text-gray-300'>
-          <div className='font-bold text-green-200'>{alt}</div>
+        <div className='flex flex-col font-normal text-left text-gray-700 dark:text-gray-300'>
+          <div className='font-bold dark:text-green-200 text-green-400'>
+            {alt}
+          </div>
           <div dangerouslySetInnerHTML={{ __html: description }} />
         </div>
       }

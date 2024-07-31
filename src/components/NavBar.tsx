@@ -1,10 +1,25 @@
-import Link from 'next/link';
-import { H1 } from '@/components/H1';
+import { CommandMenu } from '@/components/CommandMenu';
+import { DesktopNav } from '@/components/DesktopNav';
+import { MobileNav } from '@/components/MobileNav';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { cn } from '@/lib/utils';
+
+export const navStyles =
+  'sticky top-0 z-50 w-full border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-separate';
 
 export const NavBar = (): JSX.Element => (
-  <div className='p-4 w-full items-center flex h-16 border-b border-gray-800'>
-    <Link href='/'>
-      <H1 className='hover:text-gray-200 transition duration-200'>Stats</H1>
-    </Link>
-  </div>
+  <header className={cn(navStyles, 'border-b')}>
+    <div className='container flex items-center h-14 max-w-screen-2xl'>
+      <DesktopNav />
+      <MobileNav />
+      <div className='flex items-center justify-between flex-1 space-x-2 md:justify-end'>
+        <div className='flex-1 w-full md:w-auto md:flex-none'>
+          <CommandMenu />
+        </div>
+        <nav className='flex items-center'>
+          <ThemeToggle />
+        </nav>
+      </div>
+    </div>
+  </header>
 );

@@ -30,7 +30,7 @@ export const ScoreboardIcon = ({
 }: ScoreboardIconProps): JSX.Element => {
   const iconSize = 32;
 
-  const className = cn({
+  const className = cn('fill-current text-foreground', {
     'w-3 h-3': size === 'sm',
     'w-[1.125rem] h-[1.125rem]': size === 'md',
     'w-6 h-6': size === 'lg',
@@ -40,6 +40,7 @@ export const ScoreboardIcon = ({
     return (
       <div className={className}>
         <Image
+          className='grayscale invert dark:invert-0'
           src='/images/mask-icon-gold.png'
           width={iconSize}
           height={iconSize}

@@ -7,7 +7,7 @@ const BASE_URL =
 
 export type ChampIconProps = {
   champId?: number;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xs';
 };
 
 export const ChampIcon = ({
@@ -16,6 +16,7 @@ export const ChampIcon = ({
 }: ChampIconProps): JSX.Element => (
   <div
     className={cn('overflow-hidden rounded-lg shadow-tile', {
+      'w-4 h-4 rounded-sm !shadow-none border border-border': size === 'xs',
       'w-8 h-8': size === 'sm',
       'w-12 h-12': size === 'md',
       'w-16 h-16': size === 'lg',

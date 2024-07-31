@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { Tooltip } from '@/components/Tooltip';
 import { PlaceholderIcon } from '@/components/riotIcons/PlaceholderIcon';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { useChampionDetails } from '@/lib/hooks';
 import { cn, getSpellUrl } from '@/lib/utils';
 
@@ -33,9 +33,11 @@ export const Ability = ({
   return (
     <Tooltip
       tooltip={
-        <div className='flex flex-col font-normal text-gray-300'>
-          <div className='font-bold text-yellow-200'>{spell.name}</div>
-          {spell.description}
+        <div className='flex flex-col font-normal text-left dark:text-gray-300 text-gray-700'>
+          <div className='font-bold dark:text-yellow-200 text-yellow-700'>
+            {spell.name}
+          </div>
+          <div dangerouslySetInnerHTML={{ __html: spell.description }} />
         </div>
       }
     >

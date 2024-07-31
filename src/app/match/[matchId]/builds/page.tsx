@@ -1,5 +1,5 @@
-import { Selector } from '@/app/match/[matchId]/builds/components/Selector';
-import { Wrapper } from '@/app/match/[matchId]/components/Wrapper';
+import { Wrapper } from '../components/Wrapper';
+import { Selector } from './components/Selector';
 import { getMatch, getTimeline } from '@/lib/match';
 
 export default async function Page({

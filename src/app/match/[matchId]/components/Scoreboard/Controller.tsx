@@ -1,57 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useScoreboardControls } from '@/app/match/[matchId]/hooks';
+import { useScoreboardControls } from './use-scoreboard-controls';
 import { ScoreboardIcon } from '@/components/riotIcons/ScoreboardIcon';
 import { cn } from '@/lib/utils';
 
+/** Props for {@link Controller}. */
 export type ControllerProps = {
+  /** The unique key to use for the carousel controller. */
   group: string;
+  /** The size of the scoreboard component. */
   size?: 'sm' | 'md' | 'lg';
 };
 
+/**
+ * A component of the scoreboard header to control the data showing in the
+ * rightmost columns.
+ */
 export const Controller = ({
   group,
   size = 'md',
 }: ControllerProps): JSX.Element => {
-  const [group1, setGroup1] = useState<'damage' | 'damageTaken' | 'cc'>(
-    'damage',
-  );
-  const [group2, setGroup2] = useState<'gold' | 'cs' | 'vision'>('gold');
-
   const {
-    add: add1,
     moveLeft: left1,
     moveRight: right1,
-  } = useScoreboardControls(`${group}-dmg`);
+    value: group1,
+  } = useScoreboardControls(['damage', 'damageTaken', 'cc'], group);
+
   const {
-    add: add2,
     moveLeft: left2,
     moveRight: right2,
-  } = useScoreboardControls(`${group}-gold`);
-
-  useEffect(() => {
-    add1({
-      set: (string) => {
-        setGroup1(
-          string === 'damage'
-            ? 'damage'
-            : string === 'damageTaken'
-              ? 'damageTaken'
-              : 'cc',
-        );
-      },
-      values: ['damage', 'damageTaken', 'cc'],
-    });
-    add2({
-      set: (string) => {
-        setGroup2(
-          string === 'gold' ? 'gold' : string === 'cs' ? 'cs' : 'vision',
-        );
-      },
-      values: ['gold', 'cs', 'vision'],
-    });
-  }, [add1, add2]);
+    value: group2,
+  } = useScoreboardControls(['gold', 'cs', 'vision'], group);
 
   const buttonClassName =
     'cursor-pointer select-none text-gray-400 hover:text-white transition-all duration-300';

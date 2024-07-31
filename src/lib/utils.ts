@@ -7,10 +7,15 @@ export const cn = (...inputs: ClassValue[]): string => {
 };
 
 /** Format time duration (s) to human-readable format. */
-export const formatSeconds = (duration: number): string => {
-  const minutes = Math.floor(duration / 60);
-  const seconds = duration % 60;
-  return `${minutes}:${+seconds < 10 ? '0' : ''}${seconds}`;
+export const formatSeconds = (seconds: number): string => {
+  const minutes = Math.floor(seconds / 60);
+  const remainder = seconds % 60;
+  return `${minutes}:${+remainder < 10 ? '0' : ''}${remainder}`;
+};
+
+/** Format time duration (ms) to a human-readable format. */
+export const formatTimestamp = (milliseconds: number): string => {
+  return formatSeconds(Math.floor(milliseconds / 1000));
 };
 
 /** Fetcher function for useSWR. */
@@ -74,4 +79,39 @@ export const getSpellUrl = (
 ): string => {
   const spell = champion.spells[slot - 1];
   return `https://ddragon.leagueoflegends.com/cdn/${patch}.1/img/spell/${spell.image.full}`;
+};
+
+/** A list of popular operating systems. */
+export type OS = 'Mac OS' | 'iOS' | 'Windows' | 'Android' | 'Linux' | undefined;
+
+/** Get the current operating system of the user. */
+export const getOS = (): OS => {
+  if (typeof window === 'undefined') return undefined;
+
+  const userAgent = window.navigator.userAgent;
+
+  let os: OS;
+
+  if (userAgent.includes('Mac')) {
+    os = 'Mac OS';
+  } else if (/iPhone|iPad|iPod/.test(userAgent)) {
+    os = 'iOS';
+  } else if (userAgent.includes('Win')) {
+    os = 'Windows';
+  } else if (userAgent.includes('Android')) {
+    os = 'Android';
+  } else if (userAgent.includes('Linux')) {
+    os = 'Linux';
+  }
+
+  return os;
+};
+
+/** Get the command key of the operating system. */
+export const getCommandKey = (): string => {
+  const os = getOS();
+  if (os === 'Mac OS' || os === 'iOS') {
+    return '⌘';
+  }
+  return 'Ctrl';
 };

@@ -1,12 +1,28 @@
+import { groupBy } from 'lodash-es';
+import { type MatchParticipant, type Participants } from '@/lib/match';
+
+/** Represents one shop visit. */
 export type ItemBuild = {
+  /** The time of the shop visit. */
   minute: number;
+  /** The transactions in the visit. */
   items: {
+    /** The item id. */
     id: number;
+    /** Whether the item was sold or not. */
     sold: boolean;
+    /** How many of the item were purchased or sold. */
     quantity: number;
   }[];
 }[];
 
+/**
+ * Removes ITEM_UNDO events from a list of events, along with the corresponding
+ * ITEM_PURCHASED and ITEM_SOLD events.
+ *
+ * @param events The list of timeline events
+ * @returns An updated list of timeline events with events removed
+ */
 const removeUndos = (
   events: Riot.MatchV5.TimelineEvent[],
 ): Riot.MatchV5.TimelineEvent[] => {
@@ -29,6 +45,13 @@ const removeUndos = (
   return transactions;
 };
 
+/**
+ * Returns the complete list of shop transactions for each player in a game.
+ *
+ * @param timeline A match timeline
+ * @returns A record of each player in the match's puuid, mapped to their item
+ * build.
+ */
 export const getItemBuilds = (
   timeline: Riot.MatchV5.Timeline,
 ): Record<string, ItemBuild> => {
@@ -101,6 +124,13 @@ export const getItemBuilds = (
   );
 };
 
+/**
+ * Returns the skill max order for each player in a game.
+ *
+ * @param timeline A match timeline
+ * @returns A record of each player in the match's puuid, mapped to an array of
+ * skill slots corresponding to the skill max order.
+ */
 export const getSkillOrders = (
   timeline: Riot.MatchV5.Timeline,
 ): Record<string, number[]> => {
@@ -111,9 +141,7 @@ export const getSkillOrders = (
   timeline.info.frames.forEach((frame) => {
     frame.events
       .filter(
-        (
-          event,
-        ): event is Riot.MatchV5.TimelineEvent & { type: 'SKILL_LEVEL_UP' } =>
+        (event): event is Riot.MatchV5.TimelineEvent<'SKILL_LEVEL_UP'> =>
           event.type === 'SKILL_LEVEL_UP',
       )
       .forEach((event) => {
@@ -134,4 +162,79 @@ export const getSkillOrders = (
       skills,
     ]),
   );
+};
+
+const aggregateStatValues = (timestamps: StatTimestamp[]): StatTimestamp[] =>
+  Object.entries(groupBy(timestamps, 'timestamp')).map(([, values]) => {
+    const value = values.reduce((acc, { value }) => acc + value, 0);
+    return { timestamp: values[0].timestamp, value };
+  });
+
+/** The total gold at a certain timestamp. */
+export type StatTimestamp = { timestamp: number; value: number };
+
+/**
+ * Aggregates gold data for each timestamp for each player and team.
+ */
+export const getStatInfo = (
+  players: Participants,
+  timeline: Riot.MatchV5.Timeline,
+  stat: (participantFrame: Riot.MatchV5.ParticipantFrame) => number,
+): {
+  /** Each player's total gold at each timestamp. */
+  participants: Record<
+    number,
+    { participant: MatchParticipant; timestamps: StatTimestamp[] }
+  >;
+  /** Blue team's total gold at each timestamp. */
+  blue: StatTimestamp[];
+  /** Red team's total gold at each timestamp. */
+  red: StatTimestamp[];
+  /** How ahead blue team is at each timestamp. */
+  difference: StatTimestamp[];
+} => {
+  const participantStat: Record<
+    number,
+    { participant: MatchParticipant; timestamps: StatTimestamp[] }
+  > = Object.fromEntries(
+    timeline.info.participants.map(({ participantId }) => [
+      participantId,
+      { participant: players[participantId], timestamps: [] },
+    ]),
+  );
+
+  const blueStat: StatTimestamp[] = [];
+  const redStat: StatTimestamp[] = [];
+
+  timeline.info.frames.forEach(({ timestamp, participantFrames }) => {
+    Object.entries(participantFrames).forEach(([participantId, frame]) => {
+      const value = stat(frame);
+
+      const { timestamps, participant } =
+        participantStat[parseInt(participantId)];
+
+      timestamps.push({
+        timestamp,
+        value,
+      });
+
+      if (participant.teamId === 100) {
+        blueStat.push({ timestamp, value });
+      } else {
+        redStat.push({ timestamp, value });
+      }
+    });
+  });
+
+  const difference = aggregateStatValues([
+    ...blueStat,
+    ...redStat.map(({ timestamp, value }) => ({ timestamp, value: -value })),
+  ]);
+
+  return {
+    participants: participantStat,
+    blue: aggregateStatValues(blueStat),
+    red: aggregateStatValues(redStat),
+    difference,
+  };
 };

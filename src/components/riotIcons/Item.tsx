@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import { Tooltip } from '@/components/Tooltip';
 import {
   PlaceholderIcon,
   getIconClass,
 } from '@/components/riotIcons/PlaceholderIcon';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/utils';
 
 export const getDDragonItems = (patch?: string): string =>
@@ -74,10 +74,14 @@ export const GenericItem = ({
   return (
     <Tooltip
       tooltip={
-        <div className='flex flex-col font-normal text-gray-300'>
-          <div className='font-bold text-blue-200'>{name}</div>
+        <div className='flex flex-col font-normal text-left text-gray-700 dark:text-gray-300'>
+          <div className='font-bold dark:text-blue-200 text-blue-700'>
+            {name}
+          </div>
           <div
             dangerouslySetInnerHTML={{
+              // todo: make a proper parser, or eventually our own labels
+              // note that this is actually dangerous since content is from cdragon
               __html: description
                 .replaceAll(
                   '<attention',
@@ -93,7 +97,7 @@ export const GenericItem = ({
                 )
                 .replaceAll(
                   '<passive',
-                  '<passive style="color: white; font-weight: bold;"',
+                  '<passive style="color: inherit; font-weight: bold;"',
                 )
                 .replaceAll(
                   '<active',

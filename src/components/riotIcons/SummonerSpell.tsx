@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Tooltip } from '@/components/Tooltip';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/utils';
 
 // There's a file for this but whatever
@@ -113,8 +113,10 @@ export const SummonerSpell = async ({
   return (
     <Tooltip
       tooltip={
-        <div className='flex flex-col font-normal text-gray-300'>
-          <div className='font-bold text-yellow-400'>{spell.name}</div>
+        <div className='flex flex-col font-normal text-left text-gray-700 dark:text-gray-300'>
+          <div className='font-bold dark:text-yellow-400 text-yellow-500'>
+            {spell.name}
+          </div>
           <div>{spellData?.description}</div>
         </div>
       }

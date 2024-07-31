@@ -1,16 +1,34 @@
 import './globals.css';
-import '@fortawesome/fontawesome-svg-core/styles.css';
-import { config } from '@fortawesome/fontawesome-svg-core';
+import { Inter as FontSans } from 'next/font/google';
 import { type ReactNode } from 'react';
+import { Providers } from '@/app/providers';
 import { NavBar } from '@/components/NavBar';
-config.autoAddCss = false;
+import { cn } from '@/lib/utils';
+
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 export default ({ children }: { children: ReactNode }): ReactNode => {
   return (
-    <html className='flex flex-col min-h-screen bg-gray-900 dark:text-white [&_li]:ml-4'>
-      <body className='flex flex-col min-h-screen'>
-        <NavBar />
-        {children}
+    <html lang='en' suppressHydrationWarning>
+      <body
+        className={cn(
+          'flex flex-col min-h-screen antialiased font-sans bg-background',
+          fontSans.variable,
+        )}
+      >
+        <Providers
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NavBar />
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -1,21 +1,33 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useScoreboardControls } from '@/app/match/[matchId]/hooks';
-import { Tooltip } from '@/components/Tooltip';
+import { useScoreboardControls } from './use-scoreboard-controls';
+import { Tooltip } from '@/components/ui/Tooltip';
 import { cn } from '@/lib/utils';
 
+/** Props for {@link CSGoldVision}. */
 export type CSGoldVisionProps = {
+  /** A player's total gold at the end of a match. */
   gold: number;
+  /** A player's total farm at the end of a match. */
   cs: number;
+  /** The length of the game, in seconds. */
   timePlayed: number;
+  /** The number of control wards a player purchased by the end of a match. */
   controlWards: number;
+  /** The number of wards a player placed by the end of a match. */
   wardsPlaced: number;
+  /** The number of wards a player killed by the end of a match. */
   wardsKilled: number;
+  /** The size of the scoreboard component. */
   size?: 'sm' | 'md' | 'lg';
+  /** The key of the controller to use to navigate. */
   group?: string;
 };
 
+/**
+ * Shows the farm, gold, or vision stats of a player at the end of a match,
+ * navigable using the scoreboard column controller.
+ */
 export const CSGoldVision = ({
   gold,
   cs,
@@ -26,27 +38,18 @@ export const CSGoldVision = ({
   size = 'md',
   group: key,
 }: CSGoldVisionProps): JSX.Element => {
-  const [group, setGroup] = useState<'gold' | 'cs' | 'vision'>('gold');
-  const { add } = useScoreboardControls(key);
-
-  useEffect(() => {
-    add({
-      set: (string) => {
-        setGroup(
-          string === 'gold' ? 'gold' : string === 'cs' ? 'cs' : 'vision',
-        );
-      },
-      values: ['gold', 'cs', 'vision'],
-    });
-  }, [add]);
+  const { value: group } = useScoreboardControls(['gold', 'cs', 'vision'], key);
 
   return (
     <div
-      className={cn('flex flex-col text-gray-400 items-center shrink-0', {
-        'text-lg w-32': size === 'lg',
-        'text-sm w-24': size === 'md',
-        'text-[.6rem] w-16 ': size === 'sm',
-      })}
+      className={cn(
+        'flex flex-col dark:text-gray-400 text-gray-500 items-center shrink-0',
+        {
+          'text-lg w-32': size === 'lg',
+          'text-sm w-24': size === 'md',
+          'text-[.6rem] w-16 ': size === 'sm',
+        },
+      )}
     >
       {group === 'vision' ? (
         <Tooltip
@@ -69,22 +72,26 @@ export const CSGoldVision = ({
         >
           <div className='flex flex-col items-center'>
             <div>
-              <span className='text-gray-200 font-semibold'>
+              <span className='dark:text-gray-200 text-gray-800 font-semibold'>
                 {controlWards}
               </span>{' '}
               CW
             </div>
             <div>
-              <span className='text-gray-200 font-semibold'>{wardsPlaced}</span>{' '}
+              <span className='dark:text-gray-200 text-gray-800 font-semibold'>
+                {wardsPlaced}
+              </span>{' '}
               P /{' '}
-              <span className='text-gray-200 font-semibold'>{wardsKilled}</span>{' '}
+              <span className='dark:text-gray-200 text-gray-800 font-semibold'>
+                {wardsKilled}
+              </span>{' '}
               K
             </div>
           </div>
         </Tooltip>
       ) : (
         <>
-          <div className='font-semibold text-gray-200'>
+          <div className='font-semibold dark:text-gray-200 text-gray-800'>
             {(group === 'gold' ? gold : cs).toLocaleString()}
           </div>
           <div>
