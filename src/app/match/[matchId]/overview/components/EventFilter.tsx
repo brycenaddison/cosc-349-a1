@@ -65,6 +65,7 @@ export const EventFilter = (): JSX.Element => {
         <div className='flex flex-col'>
           {Object.entries(eventNames).map(([eventType, eventName]) => (
             <Button
+              key={eventType}
               className='relative flex w-full select-none items-center rounded-sm py-1.5 h-8 pl-8 pr-2'
               variant='ghost'
               onClick={() => {

@@ -23,6 +23,7 @@ export const emptyDashboard: OverviewContextType = {
   view: defaultView,
   excludedTypes: [],
   events: [],
+  allEvents: [],
   minute: undefined,
   setSelectedPlayers: () => null,
   setHoveredPlayer: () => null,

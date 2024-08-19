@@ -54,6 +54,8 @@ export type OverviewContextType = {
   excludedTypes: Riot.MatchV5.TimelineEvent['type'][];
   /** List of parsed and filtered events. */
   events: ListEvent[];
+  /** List of events, but not filtered on minute. */
+  allEvents: ListEvent[];
   /** The minute to filter events on. */
   minute: number | undefined;
   /** Sets the list of selected players. */
@@ -114,20 +116,13 @@ export const OverviewDashboard = ({
   ]);
   const [minute, setMinute] = useState<number | undefined>();
 
-  const events = useMemo(() => {
+  const allEvents = useMemo(() => {
     let lastKillEvent: (ListEvent & { type: 'CHAMPION_KILL' }) | undefined;
 
     return timeline.info.frames
       .map((frame) => frame.events)
       .flat()
       .map((rawEvent) => {
-        if (
-          minute !== undefined &&
-          Math.round(rawEvent.timestamp / 60000) !== minute
-        ) {
-          return undefined;
-        }
-
         if (excludedTypes.some((type) => rawEvent.type === type)) {
           return undefined;
         }
@@ -164,7 +159,17 @@ export const OverviewDashboard = ({
           event !== undefined &&
           arePlayersInvolved(players, selectedPlayers, event),
       );
-  }, [excludedTypes, players, selectedPlayers, timeline.info.frames, minute]);
+  }, [excludedTypes, players, selectedPlayers, timeline.info.frames]);
+
+  const events = useMemo(
+    () =>
+      allEvents.filter(
+        (event) =>
+          minute === undefined ||
+          Math.round(event.timestamp / 60000) === minute,
+      ),
+    [allEvents, minute],
+  );
 
   return (
     <OverviewContext.Provider
@@ -177,6 +182,7 @@ export const OverviewDashboard = ({
         excludedTypes,
         events,
         minute,
+        allEvents,
         setSelectedPlayers,
         setHoveredPlayer,
         setView,
@@ -184,7 +190,7 @@ export const OverviewDashboard = ({
         setMinute,
       }}
     >
-      <div className='flex flex-col gap-3 px-2'>
+      <div className='flex flex-col gap-3 p-4'>
         <div className='flex flex-wrap items-center justify-between gap-3'>
           <ViewSelector />
           <PlayerSelector />

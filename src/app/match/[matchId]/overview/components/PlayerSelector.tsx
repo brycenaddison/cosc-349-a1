@@ -29,6 +29,7 @@ export const PlayerSelector = (): JSX.Element => {
 
         return (
           <div
+            key={player.puuid}
             onMouseEnter={() => {
               setHoveredPlayer(player.participantId);
             }}

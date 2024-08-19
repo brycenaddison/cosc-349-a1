@@ -1,6 +1,7 @@
 import './globals.css';
 import { Inter as FontSans } from 'next/font/google';
-import { type ReactNode } from 'react';
+import { type ReactNode, Suspense } from 'react';
+import Loading from '@/app/loading';
 import { Providers } from '@/app/providers';
 import { NavBar } from '@/components/NavBar';
 import { cn } from '@/lib/utils';
@@ -27,7 +28,7 @@ export default ({ children }: { children: ReactNode }): ReactNode => {
           disableTransitionOnChange
         >
           <NavBar />
-          {children}
+          <Suspense fallback={<Loading />}>{children}</Suspense>
         </Providers>
       </body>
     </html>

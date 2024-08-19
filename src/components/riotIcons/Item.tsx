@@ -4,25 +4,23 @@ import {
   getIconClass,
 } from '@/components/riotIcons/PlaceholderIcon';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { cn } from '@/lib/utils';
+import { cn, getAssetPath, getDataPath } from '@/lib/utils';
 
-export const getDDragonItems = (patch?: string): string =>
-  `https://ddragon.leagueoflegends.com/cdn/${patch ?? process.env.LIVE_PATCH ?? '14.3'}.1/data/en_US/item.json`;
-export const getCDragonItems = (patch?: string): string =>
-  `https://raw.communitydragon.org/${patch ?? 'latest'}/plugins/rcp-be-lol-game-data/global/default/v1/items.json`;
+/** A link to the CDragon item lookup JSON (for item details). */
+export const itemListPath = 'v1/items.json';
 
-const getCDragonItemsDir = (patch?: string): string =>
-  `https://raw.communitydragon.org/${patch ?? 'latest'}/plugins/rcp-be-lol-game-data/global/default/assets/items/icons2d/`;
+/** A path to the item icon directory. */
+const itemPath = 'assets/items/icons2d/';
 
-export type GenericItemProps = {
-  item?: number;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+/** Props for {@link GenericItem}. */
+export type GenericItemProps = ItemProps & {
+  /** The CDragon Item json. */
   itemLookup?: CDragon.Item[];
+  /** The DDragon Item json. */
   tooltipLookup?: Riot.DDragon.ItemLookup;
-  patch?: string;
 };
 
+/** A wrapped icon representing an item. */
 export const GenericItem = ({
   item: itemId = 0,
   size = 'md',
@@ -122,7 +120,7 @@ export const GenericItem = ({
       <Image
         priority
         className={iconClass}
-        src={`${getCDragonItemsDir(patch)}${path.toLowerCase()}`}
+        src={`${getAssetPath(patch, itemPath)}${path.toLowerCase()}`}
         height={sizePx}
         width={sizePx}
         alt={`Item ${item.name}`}
@@ -131,25 +129,31 @@ export const GenericItem = ({
   );
 };
 
+/** Props for {@link Item}. */
 export type ItemProps = {
+  /** The item number, blank if undefined. */
   item?: number;
+  /** The icon size (24, 32, or 48px). */
   size?: 'sm' | 'md' | 'lg';
+  /** Additional classes to apply to the icon wrapper. */
   className?: string;
+  /** The patch of the game. */
   patch?: string;
 };
 
+/** A server-side rendered and wrapped icon of an item. */
 export const Item = async ({
   item: itemId = 0,
   size = 'md',
   className = '',
   patch,
 }: ItemProps): Promise<JSX.Element | null> => {
-  const itemLookup = (await fetch(getCDragonItems(patch)).then((res) =>
-    res.json(),
+  const itemLookup = (await fetch(getAssetPath(patch, itemListPath)).then(
+    (res) => res.json(),
   )) as CDragon.Item[];
 
-  const tooltipLookup = (await fetch(getDDragonItems(patch)).then((res) =>
-    res.json(),
+  const tooltipLookup = (await fetch(getDataPath(patch, 'item.json')).then(
+    (res) => res.json(),
   )) as Riot.DDragon.ItemLookup;
 
   return (

@@ -10,6 +10,7 @@ import Damage from '@/../public/svg/scoreboard-sword-icon.svg';
 
 import { cn } from '@/lib/utils';
 
+/** Props for {@link ScoreboardIcon}. */
 export type ScoreboardIconProps = {
   size?: 'sm' | 'md' | 'lg';
   type:
@@ -24,6 +25,7 @@ export type ScoreboardIconProps = {
     | 'rightarrow';
 };
 
+/** Represents an icon on the scoreboard. */
 export const ScoreboardIcon = ({
   size = 'md',
   type,

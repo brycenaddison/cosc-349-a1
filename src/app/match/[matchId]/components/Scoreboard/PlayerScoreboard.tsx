@@ -99,6 +99,8 @@ export const PlayerScoreboard = ({
     </div>
   );
 
+  const runeSize = size === 'sm' ? 13 : size === 'md' ? 20 : 26;
+
   const spellComponent = (
     <div
       className={cn('flex shrink-0', {
@@ -112,8 +114,8 @@ export const PlayerScoreboard = ({
           'gap-1': size === 'lg',
         })}
       >
-        <SummonerSpell spellId={summoner1Id} size={size} />
-        <SummonerSpell spellId={summoner2Id} size={size} />
+        <SummonerSpell spellId={summoner1Id} size={size} patch={patch} />
+        <SummonerSpell spellId={summoner2Id} size={size} patch={patch} />
       </div>
 
       <div
@@ -122,16 +124,23 @@ export const PlayerScoreboard = ({
           'gap-1': size === 'lg',
         })}
       >
-        <Rune runeData={perks} type='keystone' size={size} />
+        <Rune
+          patch={patch}
+          slot={0}
+          runeData={perks}
+          type='primary'
+          size={runeSize}
+        />
         <Rune
           runeData={perks}
           type='secondary'
-          size={size}
+          size={runeSize}
           className={cn({
             'p-1': size === 'lg',
             'p-[3px]': size === 'md',
             'p-0.5': size === 'sm',
           })}
+          patch={patch}
         />
       </div>
     </div>
@@ -226,7 +235,7 @@ export const PlayerScoreboard = ({
             <div className='font-semibold text-md'>{champLevel}</div>
           )}
           <div className='relative'>
-            <ChampIcon champId={championId} size={size} />
+            <ChampIcon champId={championId} size={size} patch={patch} />
             {size !== 'sm' && (
               <div
                 className={cn(

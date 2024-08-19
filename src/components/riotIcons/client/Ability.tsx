@@ -6,13 +6,19 @@ import { Tooltip } from '@/components/ui/Tooltip';
 import { useChampionDetails } from '@/lib/hooks';
 import { cn, getSpellUrl } from '@/lib/utils';
 
+/** Props for {@link Ability}. */
 export type AbilityProps = {
+  /** The numeric champion id. */
   championId: number;
+  /** The ability to show (1 through 4). */
   ability: number;
+  /** The current game patch. */
   patch: string;
+  /** The size of the icon (32, 48, or 64px). */
   size?: 'sm' | 'md' | 'lg';
 };
 
+/** A wrapped icon representing a champion ability. */
 export const Ability = ({
   championId,
   ability,

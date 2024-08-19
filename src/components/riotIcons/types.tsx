@@ -39,4 +39,17 @@ namespace CDragon {
     squarePortraitPath: string;
     roles: string[];
   };
+
+  export type Perk = {
+    id: number;
+    name: string;
+    majorChangePatchVersion: string;
+    tooltip: string;
+    shortDesc: string;
+    longDesc: string;
+    recommendationDescriptor: string;
+    iconPath: string;
+    endOfGameStateDescs: string[];
+    recommendationDescriptorAttributes: Record<string, number>;
+  };
 }

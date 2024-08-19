@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useState } from 'react';
+import { CommandChip } from '@/components/CommandChip';
 import { Button } from '@/components/ui/Button';
 import {
   Command,
@@ -17,7 +18,7 @@ import {
   CommandSeparator,
 } from '@/components/ui/Command';
 import { links } from '@/config/config';
-import { cn, getCommandKey } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 /** Props for {@link CommandMenu}. */
 export type CommandMenuProps = {
@@ -158,9 +159,7 @@ export const CommandMenu = ({
       >
         <span className='hidden lg:inline-flex'>Search website...</span>
         <span className='inline-flex lg:hidden'>Search...</span>
-        <kbd className='pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 md:flex'>
-          {getCommandKey()} K
-        </kbd>
+        <CommandChip>K</CommandChip>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         {commandComponent}

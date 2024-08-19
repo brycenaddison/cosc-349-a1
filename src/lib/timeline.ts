@@ -170,45 +170,86 @@ const aggregateStatValues = (timestamps: StatTimestamp[]): StatTimestamp[] =>
     return { timestamp: values[0].timestamp, value };
   });
 
-/** The total gold at a certain timestamp. */
+/** The total of a stat at a certain timestamp. */
 export type StatTimestamp = { timestamp: number; value: number };
 
+export type EnhancedParticipantFrame = Riot.MatchV5.ParticipantFrame & {
+  kills: number;
+  deaths: number;
+  assists: number;
+};
+
 /**
- * Aggregates gold data for each timestamp for each player and team.
+ * Aggregates stat data for each timestamp for each player and team.
  */
 export const getStatInfo = (
   players: Participants,
   timeline: Riot.MatchV5.Timeline,
-  stat: (participantFrame: Riot.MatchV5.ParticipantFrame) => number,
+  stat: (participantFrame: EnhancedParticipantFrame) => number,
 ): {
   /** Each player's total gold at each timestamp. */
   participants: Record<
     number,
     { participant: MatchParticipant; timestamps: StatTimestamp[] }
   >;
-  /** Blue team's total gold at each timestamp. */
+  /** Blue team's total stat at each timestamp. */
   blue: StatTimestamp[];
-  /** Red team's total gold at each timestamp. */
+  /** Red team's total stat at each timestamp. */
   red: StatTimestamp[];
   /** How ahead blue team is at each timestamp. */
   difference: StatTimestamp[];
 } => {
   const participantStat: Record<
     number,
-    { participant: MatchParticipant; timestamps: StatTimestamp[] }
+    {
+      participant: MatchParticipant;
+      timestamps: StatTimestamp[];
+    }
   > = Object.fromEntries(
     timeline.info.participants.map(({ participantId }) => [
       participantId,
-      { participant: players[participantId], timestamps: [] },
+      {
+        participant: players[participantId],
+        timestamps: [],
+      },
+    ]),
+  );
+
+  const currentKills: Record<
+    number,
+    { kills: number; assists: number; deaths: number }
+  > = Object.fromEntries(
+    timeline.info.participants.map(({ participantId }) => [
+      participantId,
+      {
+        kills: 0,
+        deaths: 0,
+        assists: 0,
+      },
     ]),
   );
 
   const blueStat: StatTimestamp[] = [];
   const redStat: StatTimestamp[] = [];
 
-  timeline.info.frames.forEach(({ timestamp, participantFrames }) => {
+  timeline.info.frames.forEach(({ timestamp, participantFrames, events }) => {
+    events.forEach((event) => {
+      if (event.type === 'CHAMPION_KILL') {
+        currentKills[event.victimId].deaths += 1;
+        if (event.killerId !== undefined && event.killerId in participantStat) {
+          currentKills[event.killerId].kills += 1;
+        }
+        event.assistingParticipantIds?.forEach((id) => {
+          currentKills[id].assists += 1;
+        });
+      }
+    });
+
     Object.entries(participantFrames).forEach(([participantId, frame]) => {
-      const value = stat(frame);
+      const value = stat({
+        ...frame,
+        ...currentKills[parseInt(participantId)],
+      });
 
       const { timestamps, participant } =
         participantStat[parseInt(participantId)];

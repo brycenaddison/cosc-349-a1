@@ -114,10 +114,10 @@ const joinTokens = (...tokens: ReactNode[]): JSX.Element => (
   <>
     {tokens.map((element, index) => {
       return (
-        <>
+        <span key={index}>
           {index !== 0 && <>&nbsp;</>}
           {element}
-        </>
+        </span>
       );
     })}
   </>
@@ -163,10 +163,10 @@ const assistedBy = (ids: number[] | undefined): JSX.Element =>
     <>
       , assisted by&nbsp;
       {range(0, ids.length - 1).map((index) => (
-        <>
+        <span key={index}>
           {index !== 0 && <>,&nbsp;</>}
           <Player id={ids[index]} />
-        </>
+        </span>
       ))}
       {ids.length >= 2 && ' and '}
       <Player id={ids[ids.length - 1]} />

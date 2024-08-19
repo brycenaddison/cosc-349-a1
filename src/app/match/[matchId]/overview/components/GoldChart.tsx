@@ -54,6 +54,7 @@ const statFunctions: Record<
   Experience: (frame) => frame.xp,
   CS: (frame) => frame.jungleMinionsKilled + frame.minionsKilled,
   Damage: (frame) => frame.damageStats.totalDamageDoneToChampions,
+  Kills: (frame) => frame.kills,
 };
 
 /**
@@ -84,8 +85,15 @@ export const GoldChart = (): JSX.Element => {
     blue: blueTeam,
     difference,
   } = useMemo(
-    () => getStatInfo(players, timeline, statFunctions[stat]),
-    [players, timeline, stat],
+    () =>
+      getStatInfo(
+        players,
+        timeline,
+        graph === 'Champion Total' && stat === 'Kills'
+          ? (frame) => frame.kills + frame.assists
+          : statFunctions[stat],
+      ),
+    [players, timeline, graph, stat],
   );
 
   const options: ChartOptions<'line'> = {

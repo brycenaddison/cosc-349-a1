@@ -30,6 +30,26 @@ export const getPatch = (data: Riot.MatchV5.Match): string => {
   return data.info.gameVersion.split('.').slice(0, 2).join('.');
 };
 
+/**
+ * Gets the URL for a CDragon asset on a given path.
+ *
+ * @param patch The patch to look for assets in, latest if undefined
+ * @param path An extra path to append to the URL
+ * @returns The URL of the asset path
+ */
+export const getAssetPath = (patch?: string, path = ''): string =>
+  `https://raw.communitydragon.org/${patch ?? 'latest'}/plugins/rcp-be-lol-game-data/global/default/${path}`;
+
+/**
+ * Gets the URL for a DDragon asset on a given path.
+ *
+ * @param patch The patch to look for assets in, latest if undefined
+ * @param path An extra path to append to the URL
+ * @returns The URL of the asset path
+ */
+export const getDataPath = (patch?: string, path = ''): string =>
+  `http://ddragon.leagueoflegends.com/cdn/${patch ?? process.env.LIVE_PATCH ?? '14.3'}.1/data/en_US/${path}`;
+
 /** Get champion details from ID. */
 export const getChampion = async (
   championId: number,

@@ -42,6 +42,7 @@ export const RiftMap = (): JSX.Element => {
         height={512}
         width={512}
         alt="Summoner's Rift Map"
+        priority
       />
       {killEvents.map((event, index) => (
         <div
@@ -64,6 +65,7 @@ export const RiftMap = (): JSX.Element => {
           }}
         >
           <Tooltip
+            delay={0}
             className='absolute'
             tooltip={
               <div className='max-w-60 overflow-hidden inline'>

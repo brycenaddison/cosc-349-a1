@@ -23,7 +23,7 @@ const graphOptions = [
 ] as const;
 
 /** A list of stat types. */
-const statOptions = ['Gold', 'Experience', 'CS', 'Damage'] as const;
+const statOptions = ['Gold', 'Experience', 'CS', 'Damage', 'Kills'] as const;
 
 export const defaultView: ViewOption = {
   graph: graphOptions[0],
@@ -64,14 +64,16 @@ export const ViewSelector = (): JSX.Element => {
           setView({ graph, stat: value as ViewOption['stat'] });
         }}
       >
-        <SelectTrigger className='w-32'>
+        <SelectTrigger className='w-40'>
           <SelectValue placeholder='Theme' />
         </SelectTrigger>
         <SelectContent>
           {statOptions.map((option) => {
             return (
               <SelectItem key={option} value={option}>
-                {option}
+                {option === 'Kills' && graph === 'Champion Total'
+                  ? 'Kills + Assists'
+                  : option}
               </SelectItem>
             );
           })}

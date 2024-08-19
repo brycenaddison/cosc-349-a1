@@ -1,114 +1,47 @@
 import Image from 'next/image';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { cn } from '@/lib/utils';
+import { cn, getAssetPath } from '@/lib/utils';
 
-// There's a file for this but whatever
-const SUMMONER_SPELLS: Record<
-  number,
-  {
-    img: string;
-    name: string;
-  }
-> = {
-  21: {
-    img: 'summonerbarrier.png',
-    name: 'Barrier',
-  },
-  1: {
-    img: 'summoner_boost.png',
-    name: 'Cleanse',
-  },
-  2202: {
-    img: 'summoner_flash.png',
-    name: 'Flash',
-  },
-  2201: {
-    img: 'icon_summonerspell_flee.2v2_mode_fighters',
-    name: 'Flee',
-  },
-  14: {
-    img: 'summonerignite.png',
-    name: 'Ignite',
-  },
-  3: {
-    img: 'summoner_exhaust.png',
-    name: 'Exhaust',
-  },
-  4: {
-    img: 'summoner_flash.png',
-    name: 'Flash',
-  },
-  6: {
-    img: 'summoner_haste.png',
-    name: 'Ghost',
-  },
-  7: {
-    img: 'summoner_heal.png',
-    name: 'Heal',
-  },
-  13: {
-    img: 'summonermana.png',
-    name: 'Clarity',
-  },
-  30: {
-    img: 'benevolence_of_king_poro_icon.png',
-    name: 'To the King!',
-  },
-  31: {
-    img: 'trailblazer_poro_icon.png',
-    name: 'Poro Toss',
-  },
-  11: {
-    img: 'summoner_smite.png',
-    name: 'Smite',
-  },
-  39: {
-    img: 'summoner_mark.png',
-    name: 'Mark',
-  },
-  32: {
-    img: 'summoner_mark.png',
-    name: 'Mark',
-  },
-  12: {
-    img: 'summoner_teleport.png',
-    name: 'Teleport',
-  },
-  54: {
-    img: 'summoner_empty.png',
-    name: 'Placeholder',
-  },
-  55: {
-    img: 'summoner_emptysmite.png',
-    name: 'Placeholder and Attack-Smite',
-  },
-};
+const spellInfoPath = 'v1/summoner-spells.json';
 
-const CDRAGON_SPELLS =
-  'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/';
-const SPELLS_JSON =
-  'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json';
-
+/** Props for {@link SummonerSpell}. */
 export type SummonerSpellProps = {
+  /** The numeric ID of the summoner spell. */
   spellId?: number;
+  /** The size of the icon (24, 32, or 48px). */
   size?: 'sm' | 'md' | 'lg';
+  /** Additional classes to add to the image. */
   className?: string;
+  /** The patch of the game. */
+  patch?: string;
 };
 
+/** A wrapped icon representing a summoner spell. */
 export const SummonerSpell = async ({
   spellId = 54,
   size = 'lg',
   className = '',
+  patch,
 }: SummonerSpellProps): Promise<JSX.Element> => {
-  const spell =
-    spellId in SUMMONER_SPELLS ? SUMMONER_SPELLS[spellId] : SUMMONER_SPELLS[54];
   const imgSize = size === 'lg' ? 26 : size === 'md' ? 20 : 13;
 
-  const spells = (await fetch(SPELLS_JSON).then((res) =>
+  const spells = (await fetch(getAssetPath(patch, spellInfoPath)).then((res) =>
     res.json(),
   )) as CDragon.SummonerSpell[];
 
-  const spellData = spells.find((spell) => spell.id === spellId);
+  const spell = spells.find((spell) => spell.id === spellId) ?? {
+    id: 54,
+    name: 'Placeholder',
+    description: 'No summoner spell selected.',
+    summonerLevel: 1,
+    cooldown: 0,
+    gameModes: [],
+    iconPath: '/lol-game-data/assets/DATA/Spells/Icons2D/Summoner_Empty.png',
+  };
+
+  spell.iconPath = spell.iconPath
+    .replaceAll('/lol-game-data/assets/', '')
+    .toLowerCase();
 
   return (
     <Tooltip
@@ -117,7 +50,7 @@ export const SummonerSpell = async ({
           <div className='font-bold dark:text-yellow-400 text-yellow-500'>
             {spell.name}
           </div>
-          <div>{spellData?.description}</div>
+          <div>{spell.description}</div>
         </div>
       }
     >
@@ -127,7 +60,7 @@ export const SummonerSpell = async ({
           rounded: size === 'md',
           'rounded-sm': size === 'sm',
         })}
-        src={`${CDRAGON_SPELLS}${spell.img}`}
+        src={getAssetPath(patch, spell.iconPath)}
         alt={spell.name}
         width={imgSize}
         height={imgSize}

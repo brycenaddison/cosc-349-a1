@@ -1,4 +1,3 @@
-import { Wrapper } from '../components/Wrapper';
 import { OverviewDashboard } from './components/OverviewDashboard';
 import { getMatch, getMatchParticipants, getTimeline } from '@/lib/match';
 
@@ -7,13 +6,12 @@ export default async function Page({
 }: {
   params: { matchId: string };
 }): Promise<JSX.Element> {
-  const match = await getMatch(`NA1_${params.matchId}`);
-  const timeline = await getTimeline(`NA1_${params.matchId}`);
+  const matchPromise = getMatch(`NA1_${params.matchId}`);
+  const timelinePromise = getTimeline(`NA1_${params.matchId}`);
+
+  const [match, timeline] = await Promise.all([matchPromise, timelinePromise]);
+
   const players = getMatchParticipants(match);
 
-  return (
-    <Wrapper page='overview' matchId={params.matchId}>
-      <OverviewDashboard timeline={timeline} players={players} />
-    </Wrapper>
-  );
+  return <OverviewDashboard timeline={timeline} players={players} />;
 }

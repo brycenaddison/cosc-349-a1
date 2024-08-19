@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import { BuildPath } from './BuildPath';
 import { SkillOrder } from './SkillOrder';
+import { Runes } from '@/app/match/[matchId]/builds/components/Runes';
 import { ChampIcon } from '@/components/riotIcons/ChampIcon';
 import { ScrollArea } from '@/components/ui/ScrollArea';
 import { getItemBuilds, getSkillOrders } from '@/lib/timeline';
 import { cn, getPatch } from '@/lib/utils';
 
-/** Props for {@link Selector}. */
-export type SelectorProps = {
+/** Props for {@link BuildPage}. */
+export type BuildPageProps = {
   /** Riot match data. */
   match: Riot.MatchV5.Match;
   /** Riot timeline data. */
@@ -17,7 +18,7 @@ export type SelectorProps = {
 };
 
 /** The client side build path page. */
-export const Selector = ({ match, timeline }: SelectorProps): JSX.Element => {
+export const BuildPage = ({ match, timeline }: BuildPageProps): JSX.Element => {
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
   const participant = match.info.participants[selectedIndex];
@@ -29,7 +30,7 @@ export const Selector = ({ match, timeline }: SelectorProps): JSX.Element => {
   const skillOrders = getSkillOrders(timeline);
 
   return (
-    <div className='flex flex-col w-screen gap-4 pt-4'>
+    <div className='flex flex-col grow min-w-0 max-w-[100vw] gap-4 pt-4'>
       <ScrollArea orientation='horizontal'>
         <div className='flex gap-2 pb-3 mx-auto w-fit'>
           {match.info.participants.map(
@@ -59,6 +60,12 @@ export const Selector = ({ match, timeline }: SelectorProps): JSX.Element => {
         Items
         <div className='p-2 mx-auto mt-1 border rounded-lg border-border w-fit'>
           <BuildPath patch={patch} build={builds[selected]} />
+        </div>
+      </div>
+      <div className='text-xl font-semibold text-center px-4'>
+        Runes
+        <div className='p-2 mx-auto mt-1 border rounded-lg border-border w-fit'>
+          <Runes patch={patch} runes={participant.perks} />
         </div>
       </div>
       <div className='text-xl font-semibold text-center px-4'>

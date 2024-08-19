@@ -1,5 +1,4 @@
-import { Wrapper } from '../components/Wrapper';
-import { Selector } from './components/Selector';
+import { BuildPage } from './components/BuildPage';
 import { getMatch, getTimeline } from '@/lib/match';
 
 export default async function Page({
@@ -7,12 +6,10 @@ export default async function Page({
 }: {
   params: { matchId: string };
 }): Promise<JSX.Element> {
-  const match = await getMatch(`NA1_${params.matchId}`);
-  const timeline = await getTimeline(`NA1_${params.matchId}`);
+  const matchPromise = getMatch(`NA1_${params.matchId}`);
+  const timelinePromise = getTimeline(`NA1_${params.matchId}`);
 
-  return (
-    <Wrapper page='builds' matchId={params.matchId}>
-      <Selector match={match} timeline={timeline} />
-    </Wrapper>
-  );
+  const [match, timeline] = await Promise.all([matchPromise, timelinePromise]);
+
+  return <BuildPage match={match} timeline={timeline} />;
 }

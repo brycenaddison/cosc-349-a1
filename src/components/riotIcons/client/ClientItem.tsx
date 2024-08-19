@@ -4,10 +4,11 @@ import useSWR from 'swr';
 import {
   GenericItem,
   type ItemProps,
-  getCDragonItems,
-  getDDragonItems,
+  itemListPath,
 } from '@/components/riotIcons/Item';
+import { getAssetPath, getDataPath } from '@/lib/utils';
 
+/** A client-side wrapper for an item icon. */
 export const ClientItem = ({
   item: itemId = 0,
   size = 'md',
@@ -15,7 +16,7 @@ export const ClientItem = ({
   patch,
 }: ItemProps): JSX.Element => {
   const { data: itemLookup } = useSWR('items', () =>
-    fetch(getCDragonItems(patch)).then(
+    fetch(getAssetPath(patch, itemListPath)).then(
       (res): Promise<CDragon.Item[]> => res.json(),
     ),
   );
@@ -23,7 +24,7 @@ export const ClientItem = ({
   const { data: tooltipLookup } = useSWR(
     'riotItems',
     (): Promise<Riot.DDragon.ItemLookup> =>
-      fetch(getDDragonItems(patch)).then((res) => res.json()),
+      fetch(getDataPath(patch, 'item.json')).then((res) => res.json()),
   );
 
   return (

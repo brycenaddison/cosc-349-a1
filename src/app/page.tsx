@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { exampleMatches } from '@/app/match/[matchId]/page';
 import { Button } from '@/components/ui/Button';
 import { H1 } from '@/components/ui/H1';
+import { exampleMatches } from '@/config/config';
 
 export default function HomePage(): JSX.Element {
   return (

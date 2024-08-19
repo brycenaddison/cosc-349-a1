@@ -1,57 +1,103 @@
 import Image from 'next/image';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { cn } from '@/lib/utils';
+import { cn, getAssetPath, getDataPath } from '@/lib/utils';
 
-const CDRAGON_URL =
-  'https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/';
-const RUNES_REFORGED =
-  'http://ddragon.leagueoflegends.com/cdn/14.3.1/data/en_US/runesReforged.json';
+/** Directory of stat icons paths. */
+export const cdragonPerksList = 'v1/perks.json';
 
+/** Riot rune data. */
+export const ddragonPerksList = 'runesReforged.json';
+
+/** Props for {@link Rune}. */
 export type RuneProps = {
+  /** The rune data from the match history. */
   runeData: Riot.MatchV5.Perks;
-  type?: 'keystone' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
+  /**
+   * Whether to fetch the primary or secondary tree.
+   *
+   * By default, the primary tree will be used.
+   */
+  type?: 'primary' | 'secondary' | 'stat';
+  /** The rune slot. Shows the tree symbol if undefined. */
+  slot?: 0 | 1 | 2 | 3;
+  /** The size of the icon (24, 32, or 48px). */
+  size?: 'sm' | 'md' | 'lg' | number;
+  /** The current patch of the game. */
+  patch?: string;
+  /** Extra classes to apply to the image. */
   className?: string;
 };
 
-export const Rune = async ({
+/** A rune icon without network calls. */
+export const GenericRune = ({
   runeData,
-  type = 'keystone',
+  type = 'primary',
+  slot,
   size = 'lg',
+  patch,
   className = '',
-}: RuneProps): Promise<JSX.Element> => {
-  const runeDirectory = (await fetch(RUNES_REFORGED).then((res) =>
-    res.json(),
-  )) as Riot.DDragon.RuneLookup[];
-
-  const rune = type === 'keystone' ? runeData.styles[0] : runeData.styles[1];
-
-  const tree = runeDirectory.find((tree) => tree.id === rune.style);
-
-  let path = 'runesicon.png';
-  let alt = `${type} rune`;
+  riotPerks,
+  cdragonPerks,
+}: RuneProps & {
+  riotPerks?: Riot.DDragon.RuneLookup[];
+  cdragonPerks?: CDragon.Perk[];
+}): JSX.Element => {
+  let path = 'perk-images/styles/runesicon.png';
+  let alt = `Rune`;
   let description;
 
-  if (tree !== undefined) {
-    if (type === 'keystone') {
-      const keystone = tree.slots[0].runes.find(
-        (rune) => rune.id === runeData.styles[0].selections[0].perk,
-      );
+  if (type === 'stat') {
+    const id =
+      runeData.statPerks[
+        slot === 1 ? 'offense' : slot === 2 ? 'flex' : 'defense'
+      ];
 
-      if (keystone !== undefined) {
-        path = keystone.icon;
-        alt = keystone.name;
-        description = keystone.longDesc;
+    const rune = cdragonPerks?.find((rune) => rune.id === id);
+
+    if (rune !== undefined) {
+      path = rune.iconPath.replace('/lol-game-data/assets/v1/', '');
+      alt = rune.name;
+      description = rune.longDesc;
+    }
+  } else {
+    const runeTree =
+      type === 'primary' ? runeData.styles[0] : runeData.styles[1];
+
+    const tree = riotPerks?.find((tree) => tree.id === runeTree.style);
+
+    if (tree !== undefined) {
+      if (slot === undefined) {
+        path = tree.icon;
+        alt = tree.name;
+      } else {
+        const runes = tree.slots.flatMap(({ runes }) => runes);
+        const selectedRuneId = runeTree.selections[slot].perk;
+
+        const runeData = runes.find((rune) => rune.id === selectedRuneId);
+
+        if (runeData !== undefined) {
+          path = runeData.icon;
+          alt = runeData.name;
+          description = runeData.longDesc;
+        }
       }
-    } else {
-      path = tree.icon;
-      alt = tree.name;
     }
   }
 
-  const src = `${CDRAGON_URL}${path.toLowerCase()}`;
+  const src = `${getAssetPath(patch, 'v1/')}${path.toLowerCase()}`;
 
-  const sizePx = size === 'sm' ? 13 : size === 'md' ? 20 : 26;
+  const sizePx =
+    typeof size === 'number'
+      ? size
+      : size === 'sm'
+        ? 24
+        : size === 'md'
+          ? 32
+          : 48;
+
+  const roundedRune =
+    (type === 'secondary' && slot !== undefined) ||
+    (type === 'primary' && slot !== 0 && slot !== undefined);
 
   const img = (
     <Image
@@ -60,6 +106,7 @@ export const Rune = async ({
         'rounded-lg': size === 'lg',
         'rounded-md': size === 'md',
         rounded: size === 'sm',
+        'rounded-full': roundedRune,
       })}
       alt={alt}
       width={sizePx}
@@ -82,5 +129,26 @@ export const Rune = async ({
     >
       {img}
     </Tooltip>
+  );
+};
+
+/** A wrapped rune icon. */
+export const Rune = async ({
+  patch,
+  ...args
+}: RuneProps): Promise<JSX.Element> => {
+  const runeDirectory = (await fetch(getDataPath(patch, ddragonPerksList)).then(
+    (res) => res.json(),
+  )) as Riot.DDragon.RuneLookup[];
+  const statIconDirectory = (await fetch(
+    getAssetPath(patch, cdragonPerksList),
+  ).then((res) => res.json())) as CDragon.Perk[];
+
+  return (
+    <GenericRune
+      {...args}
+      riotPerks={runeDirectory}
+      cdragonPerks={statIconDirectory}
+    />
   );
 };

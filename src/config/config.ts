@@ -1,4 +1,4 @@
-import { exampleMatches } from '@/app/match/[matchId]/page';
+export const exampleMatches = ['4947148802', '4959299173'];
 
 export type Link = {
   href: string;
