@@ -40,14 +40,16 @@ services:
     ports:
       - 3001:3001
 
-  # frontend:
-  #   container_name: container-frontend
-  #   build:
-  #     context: .
-  #     dockerfile: ./frontend/Dockerfile
-  #   restart: always
-  #   ports:
-  #     - 3000:3000
+  frontend:
+    container_name: container-frontend
+    build:
+      context: ./frontend
+    restart: always
+    environment:
+      LIVE_PATCH: "14.16"
+      API_HOST: "http://backend:3001"
+    ports:
+      - 80:3000
 
 volumes:
   postgres-data:

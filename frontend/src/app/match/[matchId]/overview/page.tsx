@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { OverviewDashboard } from './components/OverviewDashboard';
 import { getMatch, getMatchParticipants, getTimeline } from '@/lib/match';
 
@@ -10,6 +11,8 @@ export default async function Page({
   const timelinePromise = getTimeline(`NA1_${params.matchId}`);
 
   const [match, timeline] = await Promise.all([matchPromise, timelinePromise]);
+
+  if (!match || !timeline) notFound();
 
   const players = getMatchParticipants(match);
 

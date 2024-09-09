@@ -1,5 +1,3 @@
-export const exampleMatches = ['4947148802', '4959299173'];
-
 export type Link = {
   href: string;
   label: string;
@@ -7,7 +5,7 @@ export type Link = {
 
 export const links: Link[] = [
   {
-    href: `/match/${exampleMatches[0]}/`,
+    href: `/history/`,
     label: 'Match History',
   },
 ];

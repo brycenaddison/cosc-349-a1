@@ -5,11 +5,9 @@
  */
 const handleResponse = async (response: Response): Promise<unknown> => {
   if (!response.ok) {
-    await response
-      .json()
-      .then((data: { status: { message: string; status_code: number } }) => {
-        throw new Error(`${data.status.status_code}: ${data.status.message}`);
-      });
+    if (response.status === 404) return undefined;
+
+    throw new Error(response.statusText);
   }
   return response.json();
 };
@@ -18,19 +16,21 @@ const handleResponse = async (response: Response): Promise<unknown> => {
 const get = async (url: string): Promise<unknown> =>
   fetch(url).then(handleResponse);
 
-/** Fetches timeline data from Riot API. */
+/** Fetches timeline data. */
 export const getTimeline = async (
   matchId: string,
-): Promise<Riot.MatchV5.Timeline> =>
-  get(
-    `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}/timeline?api_key=${process.env.RIOT_TOKEN}`,
-  ) as Promise<Riot.MatchV5.Timeline>;
+): Promise<Riot.MatchV5.Timeline | undefined> =>
+  get(`${process.env.API_HOST}/timeline/${matchId}`) as Promise<
+    Riot.MatchV5.Timeline | undefined
+  >;
 
-/** Fetches match data from Riot API. */
-export const getMatch = async (matchId: string): Promise<Riot.MatchV5.Match> =>
-  get(
-    `https://americas.api.riotgames.com/lol/match/v5/matches/${matchId}?api_key=${process.env.RIOT_TOKEN}`,
-  ) as Promise<Riot.MatchV5.Match>;
+/** Fetches match data. */
+export const getMatch = async (
+  matchId: string,
+): Promise<Riot.MatchV5.Match | undefined> =>
+  get(`${process.env.API_HOST}/match/${matchId}`) as Promise<
+    Riot.MatchV5.Match | undefined
+  >;
 
 /** Represents a player in a match. */
 export type MatchParticipant = {

@@ -1,13 +1,9 @@
 import { format } from 'date-fns';
+import { notFound } from 'next/navigation';
 import { Scoreboard } from './components/Scoreboard';
 import { StatTable } from '@/app/match/[matchId]/components/StatTable';
-import { exampleMatches } from '@/config/config';
 import { getMatch, getMatchParticipants, getTimeline } from '@/lib/match';
 import { formatSeconds, getPatch } from '@/lib/utils';
-
-export function generateStaticParams(): { matchId: string }[] {
-  return exampleMatches.map((matchId) => ({ matchId }));
-}
 
 export default async function Page({
   params,
@@ -19,6 +15,8 @@ export default async function Page({
 
   const [match, timeline] = await Promise.all([matchPromise, timelinePromise]);
 
+  if (!match || !timeline) notFound();
+  console.log(match);
   const players = getMatchParticipants(match);
 
   return (
@@ -46,7 +44,3 @@ export default async function Page({
     </div>
   );
 }
-
-// 404 for matches not in data
-export const dynamic = 'force-static';
-export const dynamicParams = false;
