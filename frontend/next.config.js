@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+  productionBrowserSourceMaps: false,
+
   eslint: {
     dirs: ['src'],
   },
@@ -7,7 +10,6 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
 
-  // Uncoment to add domain whitelist
   images: {
     remotePatterns: [
       {

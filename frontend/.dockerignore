@@ -1,0 +1,14 @@
+Dockerfile
+.dockerignore
+node_modules
+README.md
+.next
+.git
+.vscode
+.husky
+.github
+.gitignore
+.nvmrc
+.prettierignore
+.prettierrc.js
+commitlint.config.js
