@@ -1,3 +1,7 @@
+'use server';
+
+import { type RequestInit } from 'next/dist/server/web/spec-extension/request';
+
 /**
  * Generic error handler for HTTP requests.
  * @param response HTTP response from API
@@ -13,14 +17,14 @@ const handleResponse = async (response: Response): Promise<unknown> => {
 };
 
 /** Fetches JSON data from URL. */
-const get = async (url: string): Promise<unknown> =>
-  fetch(url).then(handleResponse);
+const get = async (url: string, options?: RequestInit): Promise<unknown> =>
+  fetch(url, options).then(handleResponse);
 
 /** Fetches timeline data. */
 export const getTimeline = async (
   matchId: string,
 ): Promise<Riot.MatchV5.Timeline | undefined> =>
-  get(`${process.env.API_HOST}/timeline/${matchId}`) as Promise<
+  get(`${process.env.NEXT_PUBLIC_API_HOST}/timeline/${matchId}`) as Promise<
     Riot.MatchV5.Timeline | undefined
   >;
 
@@ -28,9 +32,51 @@ export const getTimeline = async (
 export const getMatch = async (
   matchId: string,
 ): Promise<Riot.MatchV5.Match | undefined> =>
-  get(`${process.env.API_HOST}/match/${matchId}`) as Promise<
+  get(`${process.env.NEXT_PUBLIC_API_HOST}/match/${matchId}`) as Promise<
     Riot.MatchV5.Match | undefined
   >;
+
+/** Represents a comment on a match. */
+export type Comment = {
+  /** The name of the poster. */
+  name: string;
+  /** The time the message was posted. */
+  timestamp: number;
+  /** The content of the message. */
+  message: string;
+};
+
+/** Represents an entry in the match list. */
+export type MatchListing = {
+  /** The Riot match id. */
+  id: string;
+  /** The list of comments on the match. */
+  comments: Comment[];
+};
+
+/** Gets the full list of match ids and comments. */
+export const getHistory = async (): Promise<MatchListing[] | undefined> =>
+  get(`${process.env.NEXT_PUBLIC_API_HOST}/matchlist`, {
+    next: { revalidate: 0 },
+  }) as Promise<MatchListing[] | undefined>;
+
+/** Posts a comment on a match. */
+export const postComment = async (
+  matchId: string,
+  name: string,
+  message: string,
+): Promise<{ matchId: string } & Comment> =>
+  get(`${process.env.NEXT_PUBLIC_API_HOST}/comment`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      matchId,
+      name,
+      message,
+    }),
+  }) as Promise<{ matchId: string } & Comment>;
 
 /** Represents a player in a match. */
 export type MatchParticipant = {
