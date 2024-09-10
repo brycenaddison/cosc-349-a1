@@ -33,7 +33,7 @@ export const getMatchesAndComments = async (): Promise<
   );
 
   const commentRes = await pg.query(
-    'select (match_id, name, message, time) from comment',
+    'select match_id, name, message, cast(extract(epoch from time) as integer) time from comment',
   );
 
   const comments = commentRes.rows as Comment[];
@@ -53,15 +53,15 @@ export const getMatchesAndComments = async (): Promise<
   return matchlist;
 };
 
-export const postMessage = async (
+export const postComment = async (
   id: string,
   name: string,
   content: string,
-): Promise<boolean> => {
-  await pg.query(
-    'insert into message (match_id, name, message) values ($1, $2, $3)',
+): Promise<{ matchId: string } & ParsedComment> => {
+  const res = await pg.query(
+    'insert into comment (match_id, name, message) values ($1, $2, $3) returning match_id "matchId", name, message, cast(extract(epoch from time) as integer) timestamp',
     [id, name, content],
   );
 
-  return true;
+  return res.rows[0] as { matchId: string } & ParsedComment;
 };

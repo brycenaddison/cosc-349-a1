@@ -7,7 +7,7 @@ import {
   getMatchesAndComments,
   getMatchlist,
   getTimeline,
-  postMessage,
+  postComment,
 } from './service';
 
 export const createServer = (): Express => {
@@ -63,8 +63,8 @@ export const createServer = (): Express => {
       (req, res) => {
         const { matchId, name, message } = req.body;
 
-        postMessage(matchId, name, message)
-          .then(() => res.status(200).json({ ok: true }))
+        postComment(matchId, name, message)
+          .then((comment) => res.status(200).json(comment))
           .catch((reason: unknown) => {
             console.error(reason);
             res.status(500).send('Unknown backend error');
