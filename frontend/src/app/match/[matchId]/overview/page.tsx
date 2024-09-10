@@ -7,8 +7,8 @@ export default async function Page({
 }: {
   params: { matchId: string };
 }): Promise<JSX.Element> {
-  const matchPromise = getMatch(`NA1_${params.matchId}`);
-  const timelinePromise = getTimeline(`NA1_${params.matchId}`);
+  const matchPromise = getMatch(params.matchId);
+  const timelinePromise = getTimeline(params.matchId);
 
   const [match, timeline] = await Promise.all([matchPromise, timelinePromise]);
 

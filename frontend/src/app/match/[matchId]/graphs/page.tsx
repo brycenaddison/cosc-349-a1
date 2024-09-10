@@ -7,7 +7,7 @@ export default async function Page({
 }: {
   params: { matchId: string };
 }): Promise<JSX.Element> {
-  const match = await getMatch(`NA1_${params.matchId}`);
+  const match = await getMatch(params.matchId);
 
   if (!match) return notFound();
 
