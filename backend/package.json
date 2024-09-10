@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "dev": "nodemon --exec \"node -r esbuild-register ./src/index.ts\" -e .ts",
+    "dev": "nodemon -L ./src/index.ts",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts*\" --max-warnings 0",
     "start": "node dist/index.js"
   },
@@ -23,14 +23,13 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.24",
     "@types/pg": "^8.11.8",
-    "esbuild": "^0.20.1",
-    "esbuild-register": "^3.5.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
     "eslint-plugin-prettier": "^5.2.1",
     "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "typescript-eslint": "^8.4.0"
   },
