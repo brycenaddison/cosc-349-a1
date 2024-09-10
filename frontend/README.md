@@ -1,8 +1,8 @@
 The following environment variables are required:
 
-```conf
+```ini
 # fallback live game patch
 LIVE_PATCH={live patch}
 # the hostname of the api
-API_HOST={hostname}
+NEXT_PUBLIC_API_HOST={hostname}
 ```
