@@ -102,9 +102,9 @@ export type Participants = Record<number, MatchParticipant>;
  * TODO: Once the players have data in our database, this will be a network
  * call.
  */
-export const getMatchParticipants = (
+export const getMatchParticipants = async (
   match: Riot.MatchV5.Match,
-): Record<number, MatchParticipant> => {
+): Promise<Record<number, MatchParticipant>> => {
   const entries: [number, MatchParticipant][] = match.info.participants.map(
     (participant) => {
       return [
@@ -120,30 +120,5 @@ export const getMatchParticipants = (
     },
   );
 
-  return Object.fromEntries(entries);
-};
-
-/** Returns the participant data of the participant's lane opponent. */
-export const getLaneOpponent = (
-  participantId: number,
-  match: Riot.MatchV5.Match,
-): Riot.MatchV5.Participant => {
-  const { teamPosition, teamId } =
-    match.info.participants.find((p) => p.participantId === participantId) ??
-    match.info.participants[0];
-
-  const opponentTeamId = teamId === 100 ? 200 : 100;
-  const opponent = match.info.participants.find(
-    (p) => p.teamId === opponentTeamId && p.teamPosition === teamPosition,
-  );
-
-  if (opponent === undefined) {
-    return (
-      match.info.participants.find(
-        (p) => p.participantId === participantId + (teamId === 100 ? 5 : -5),
-      ) ?? match.info.participants[0]
-    );
-  }
-
-  return opponent;
+  return new Promise((resolve) => resolve(Object.fromEntries(entries)));
 };

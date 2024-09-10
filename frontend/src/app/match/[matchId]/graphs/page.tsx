@@ -9,9 +9,9 @@ export default async function Page({
 }): Promise<JSX.Element> {
   const match = await getMatch(params.matchId);
 
-  if (!match) return notFound();
+  if (!match) notFound();
 
-  const players = getMatchParticipants(match);
+  const players = await getMatchParticipants(match);
 
   return <BarChart match={match} players={players} />;
 }

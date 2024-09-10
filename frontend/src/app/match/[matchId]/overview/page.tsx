@@ -14,7 +14,7 @@ export default async function Page({
 
   if (!match || !timeline) notFound();
 
-  const players = getMatchParticipants(match);
+  const players = await getMatchParticipants(match);
 
   return <OverviewDashboard timeline={timeline} players={players} />;
 }

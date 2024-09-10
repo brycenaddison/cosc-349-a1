@@ -1,8 +1,8 @@
 import { StatRow } from './StatTable/StatRow';
 import { StatSection } from './StatTable/StatSection';
 import { ChampIcon } from '@/components/riotIcons/ChampIcon';
-import { type Participants, getLaneOpponent } from '@/lib/match';
-import { cn } from '@/lib/utils';
+import { type Participants } from '@/lib/match';
+import { cn, getLaneOpponent } from '@/lib/utils';
 
 /** Structure of sections/stats to show in the table. */
 const statTable: Record<

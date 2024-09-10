@@ -17,7 +17,7 @@ export default async function Page({
 
   if (!match || !timeline) notFound();
 
-  const players = getMatchParticipants(match);
+  const players = await getMatchParticipants(match);
 
   return (
     <div className='flex flex-col p-4 mx-auto'>
