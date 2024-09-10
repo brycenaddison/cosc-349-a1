@@ -120,5 +120,7 @@ export const getMatchParticipants = async (
     },
   );
 
-  return new Promise((resolve) => resolve(Object.fromEntries(entries)));
+  return new Promise((resolve) => {
+    resolve(Object.fromEntries(entries));
+  });
 };
