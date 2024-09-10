@@ -12,3 +12,4 @@ README.md
 .prettierignore
 .prettierrc.js
 commitlint.config.js
+.env.local
