@@ -4,6 +4,7 @@ import { Scoreboard } from './components/Scoreboard';
 import { StatTable } from '@/app/match/[matchId]/components/StatTable';
 import { getMatch, getMatchParticipants, getTimeline } from '@/lib/match';
 import { formatSeconds, getPatch } from '@/lib/utils';
+import { getScores } from '@/lib/score';
 
 export default async function Page({
   params,
@@ -19,6 +20,8 @@ export default async function Page({
 
   const players = await getMatchParticipants(match);
 
+  const scores = getScores(match, timeline);
+
   return (
     <div className='flex flex-col p-4 mx-auto'>
       <div className='flex gap-2'>
@@ -31,13 +34,13 @@ export default async function Page({
         Game ID: {params.matchId}
       </div>
       <div className='hidden lg:flex 2xl:hidden'>
-        <Scoreboard matchData={match} size='md' />
+        <Scoreboard matchData={match} scores={scores} size='md' />
       </div>
       <div className='hidden 2xl:flex'>
-        <Scoreboard matchData={match} size='lg' />
+        <Scoreboard matchData={match} scores={scores} size='lg' />
       </div>
       <div className='flex lg:hidden'>
-        <Scoreboard matchData={match} size='sm' />
+        <Scoreboard matchData={match} scores={scores} size='sm' />
       </div>
       <div className='h-8' />
       <StatTable match={match} players={players} timeline={timeline} />

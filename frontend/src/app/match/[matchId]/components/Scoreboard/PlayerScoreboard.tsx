@@ -7,6 +7,8 @@ import { Role } from '@/components/riotIcons/Role';
 import { Rune } from '@/components/riotIcons/Rune';
 import { SummonerSpell } from '@/components/riotIcons/SummonerSpell';
 import { cn } from '@/lib/utils';
+import { ScoreIcon } from './ScoreIcon';
+import { ScoreTooltip } from './ScoreTooltip';
 
 /** Props for {@link PlayerScoreboard}. */
 export type PlayerScoreboardProps = {
@@ -26,6 +28,8 @@ export type PlayerScoreboardProps = {
   group?: string;
   /** The patch the match is played on, using latest assets if undefined. */
   patch?: string;
+  /** The player's score from the machine learning model, 0-100. */
+  score?: { x: number, y: number }[];
 };
 
 /** An individual player's row in the match scoreboard. */
@@ -38,6 +42,7 @@ export const PlayerScoreboard = ({
   icon = false,
   group,
   patch,
+  score = [{ x: 0, y: 50 }],
 }: PlayerScoreboardProps): JSX.Element => {
   const {
     champLevel,
@@ -84,6 +89,10 @@ export const PlayerScoreboard = ({
       {summonerName}
     </div>
   );
+
+  const modelScoreComponent = <ScoreTooltip
+    score={score}
+  ><ScoreIcon value={score[score.length - 1].y} size={size} /></ScoreTooltip>;
 
   const itemComponent = (
     <div
@@ -252,6 +261,7 @@ export const PlayerScoreboard = ({
           </div>
           {spellComponent}
           {summonerNameComponent}
+          {modelScoreComponent}
           {kdaComponent}
           {itemComponent}
           {damageComponent}
@@ -266,6 +276,7 @@ export const PlayerScoreboard = ({
             size={size}
           />
           {summonerNameComponent}
+          {modelScoreComponent}
           {spellComponent}
           {itemComponent}
           {kdaComponent}

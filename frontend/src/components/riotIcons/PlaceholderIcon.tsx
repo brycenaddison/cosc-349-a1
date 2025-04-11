@@ -16,9 +16,9 @@ export type PlaceholderIconProps = {
  */
 export const getIconClass = (size: 'lg' | 'md' | 'sm'): string =>
   cn('shadow-tile', {
-    'w-12 h-12 rounded-lg': size === 'lg',
-    'w-8 h-8 rounded-md': size === 'md',
-    'w-6 h-6 rounded': size === 'sm',
+    'w-12 h-12 rounded-lg text-xl': size === 'lg',
+    'w-8 h-8 rounded-md text-sm': size === 'md',
+    'w-6 h-6 rounded text-xs': size === 'sm',
   });
 
 /** A blank icon to use as a placeholder. */

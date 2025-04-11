@@ -2,6 +2,7 @@ services:
   postgres:
     container_name: container-postgres
     build:
+      context: .
       dockerfile: ./db.Dockerfile
     hostname: localhost
     ports:

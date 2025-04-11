@@ -10,6 +10,8 @@ const RED = 200;
 export type ScoreboardProps = {
   /** Match data from Riot API. */
   matchData: Riot.MatchV5.Match;
+  /** The player scores from the machine learning model, mapped to PUUID. */
+  scores: Record<string, { x: number, y: number }[]>;
   /** Size of the scoreboard. */
   size?: 'sm' | 'md' | 'lg';
   /** Whether to use champion icons instead of splashes. */
@@ -23,6 +25,7 @@ export type ScoreboardProps = {
 /** A post-game scoreboard for a single game. */
 export const Scoreboard = ({
   matchData,
+  scores,
   size = 'md',
   champIcon = false,
   blueTeam = 'Blue Team',
@@ -118,6 +121,7 @@ export const Scoreboard = ({
           group={group}
           icon={champIcon}
           patch={patch}
+          score={scores[participant.puuid] ?? [50]}
         />
       ))}
       <div className='h-4' />
@@ -143,6 +147,7 @@ export const Scoreboard = ({
           group={group}
           icon={champIcon}
           patch={patch}
+          score={scores[participant.puuid] ?? [50]}
         />
       ))}
     </div>
