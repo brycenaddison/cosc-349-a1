@@ -47,6 +47,8 @@ const coefs: Record<Riot.MatchV5.Role, number[]> = {
 } as const;
 
 const getScore = (input: ModelInput): number => {
+  if (input.min < 2) return 50;
+
   const coef = coefs[input.role];
   const value =
     coef[0] +
@@ -118,6 +120,7 @@ type ModelInput = {
   wardsPlacedMin: number;
   wardsKilledMin: number;
 };
+
 /**
  * Returns the dataset for the model score by puuid.
  *
@@ -287,19 +290,19 @@ const getModelInputs = (
           assistsMin: stats.assists / min,
           wardsPlacedMin: stats.wardsPlaced / min,
           wardsKilledMin: stats.wardsKilled / min,
-          killParticipation: (stats.kills + stats.assists) / team.kills,
-          deathPercent: stats.deaths / team.deaths,
-          goldPercent: participantFrame.totalGold / team.gold,
+          killParticipation: (stats.kills + stats.assists) / (team.kills === 0 ? 1 : team.kills),
+          deathPercent: stats.deaths / (team.deaths === 0 ? 1 : team.deaths),
+          goldPercent: participantFrame.totalGold / (team.gold === 0 ? 1 : team.gold),
           csPercent:
             (participantFrame.jungleMinionsKilled +
               participantFrame.minionsKilled) /
-            team.cs,
-          xpPercent: participantFrame.xp / team.xp,
-          wardsPlacedPercent: stats.wardsPlaced / team.wardsPlaced,
-          wardsKilledPercent: stats.wardsKilled / team.wardsKilled,
+            (team.cs === 0 ? 1 : team.cs),
+          xpPercent: participantFrame.xp / (team.xp === 0 ? 1 : team.xp),
+          wardsPlacedPercent: stats.wardsPlaced / (team.wardsPlaced === 0 ? 1 : team.wardsPlaced),
+          wardsKilledPercent: stats.wardsKilled / (team.wardsKilled === 0 ? 1 : team.wardsKilled),
           damagePercent:
             participantFrame.damageStats.totalDamageDoneToChampions /
-            team.damageToChampions,
+            (team.damageToChampions === 0 ? 1 : team.damageToChampions),
         };
         result[Number(participantId)].push(input);
       },
