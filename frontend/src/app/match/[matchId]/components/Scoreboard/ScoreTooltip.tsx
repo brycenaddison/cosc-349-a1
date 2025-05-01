@@ -49,7 +49,7 @@ export const ScoreTooltip = ({
                 max: score[score.length - 1].x,
                 min: 0,
                 ticks: {
-                  callback: (v: number) => Math.floor(v),
+                  callback: (v: number | string) => typeof v === 'number' ? Math.floor(v) : v,
                 },
               },
               y: {
