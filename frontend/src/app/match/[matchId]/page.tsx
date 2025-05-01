@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import { Scoreboard } from './components/Scoreboard';
 import { StatTable } from '@/app/match/[matchId]/components/StatTable';
 import { getMatch, getMatchParticipants, getTimeline } from '@/lib/match';
-import { formatSeconds, getPatch } from '@/lib/utils';
 import { getScores } from '@/lib/score';
+import { formatSeconds, getPatch } from '@/lib/utils';
 
 export default async function Page({
   params,

@@ -11,7 +11,7 @@ export type ScoreboardProps = {
   /** Match data from Riot API. */
   matchData: Riot.MatchV5.Match;
   /** The player scores from the machine learning model, mapped to PUUID. */
-  scores: Record<string, { x: number, y: number }[]>;
+  scores: Record<string, { x: number; y: number }[]>;
   /** Size of the scoreboard. */
   size?: 'sm' | 'md' | 'lg';
   /** Whether to use champion icons instead of splashes. */

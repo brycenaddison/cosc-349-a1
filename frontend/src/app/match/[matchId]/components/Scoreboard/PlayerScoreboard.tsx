@@ -1,5 +1,7 @@
 import { CSGoldVision } from './CSGoldVision';
 import { DamageMeter } from './DamageMeter';
+import { ScoreIcon } from './ScoreIcon';
+import { ScoreTooltip } from './ScoreTooltip';
 import { ChampIcon } from '@/components/riotIcons/ChampIcon';
 import { ChampScoreboard } from '@/components/riotIcons/ChampScoreboard';
 import { Item } from '@/components/riotIcons/Item';
@@ -7,8 +9,6 @@ import { Role } from '@/components/riotIcons/Role';
 import { Rune } from '@/components/riotIcons/Rune';
 import { SummonerSpell } from '@/components/riotIcons/SummonerSpell';
 import { cn } from '@/lib/utils';
-import { ScoreIcon } from './ScoreIcon';
-import { ScoreTooltip } from './ScoreTooltip';
 
 /** Props for {@link PlayerScoreboard}. */
 export type PlayerScoreboardProps = {
@@ -29,7 +29,7 @@ export type PlayerScoreboardProps = {
   /** The patch the match is played on, using latest assets if undefined. */
   patch?: string;
   /** The player's score from the machine learning model, 0-100. */
-  score?: { x: number, y: number }[];
+  score?: { x: number; y: number }[];
 };
 
 /** An individual player's row in the match scoreboard. */
@@ -90,9 +90,11 @@ export const PlayerScoreboard = ({
     </div>
   );
 
-  const modelScoreComponent = <ScoreTooltip
-    score={score}
-  ><ScoreIcon value={score[score.length - 1].y} size={size} /></ScoreTooltip>;
+  const modelScoreComponent = (
+    <ScoreTooltip score={score}>
+      <ScoreIcon value={score[score.length - 1].y} size={size} />
+    </ScoreTooltip>
+  );
 
   const itemComponent = (
     <div
