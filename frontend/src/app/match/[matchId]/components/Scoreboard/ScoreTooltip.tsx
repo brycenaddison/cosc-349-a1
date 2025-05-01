@@ -48,6 +48,9 @@ export const ScoreTooltip = ({
                 type: 'linear',
                 max: score[score.length - 1].x,
                 min: 0,
+                ticks: {
+                  callback: (v: number) => Math.floor(v),
+                },
               },
               y: {
                 suggestedMin: 0,
